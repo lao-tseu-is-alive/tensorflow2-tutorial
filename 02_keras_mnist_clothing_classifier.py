@@ -8,6 +8,41 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
+CONST_MODEL_PATH = 'trained_models/tf2_model_mnist_fashion_2Dense128x10'
+
+
+def plot_image(index, predictions_array, true_label, img):
+    true_label, img = true_label[index], img[index]
+    plt.grid(False)
+    plt.xticks([])
+    plt.yticks([])
+
+    plt.imshow(img, cmap=plt.cm.binary)
+
+    predicted_label = np.argmax(predictions_array)
+    if predicted_label == true_label:
+        color = 'blue'
+    else:
+        color = 'red'
+
+    plt.xlabel("{} {:2.0f}% ({})".format(class_names[predicted_label.item()],
+                                         100 * np.max(predictions_array),
+                                         class_names[true_label]),
+               color=color)
+
+
+def plot_value_array(index, predictions_array, true_label):
+    true_label = true_label[index]
+    plt.grid(False)
+    plt.xticks(range(10))
+    plt.yticks([])
+    my_plot = plt.bar(range(10), predictions_array, color="#777777")
+    plt.ylim([0, 1])
+    predicted_label = np.argmax(predictions_array)
+    my_plot[predicted_label].set_color('red')
+    my_plot[true_label].set_color('blue')
+
+
 if __name__ == '__main__':
     print('# Tensorflow version : {}'.format(tf.__version__))
     print('# TensorFlow 2 Basic classification: Classify images of clothing')
@@ -26,6 +61,7 @@ if __name__ == '__main__':
  #   - The model is tested against the test set, the test_images, and test_labels arrays.""")
 
     print(' # shape of the training set {}'.format(train_images.shape))
+    print(' # type of the training set {}'.format(type(train_images)))
     print(' # len of the training label {}'.format(len(train_labels)))
     print(' # stats on the training label {}'.format(pd.DataFrame(train_labels).describe()))
 
@@ -38,8 +74,8 @@ if __name__ == '__main__':
 #   The labels are an array of integers, ranging from 0 to 9. 
 #   These correspond to the class of clothing the image represents:""")
 
-    class_names = ['T-shirt/top', 'Trouser', 'Pullover', 'Dress', 'Coat',
-                   'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle boot']
+    class_names = ['T-shirt', 'Trouser', 'Pullover', 'Dress', 'Coat',
+                   'Sandal', 'Shirt', 'Sneaker', 'Bag', 'Ankle_boot']
 
     print("# Let's have a look at first image from training set")
     plt.figure()
@@ -137,3 +173,81 @@ if __name__ == '__main__':
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
 
     print('\nTest accuracy:', test_acc)
+    print("""
+#   It turns out that the accuracy on the test dataset is a little less than the accuracy on the training dataset.
+#   This gap between training accuracy and test accuracy represents overfitting.
+#   Overfitting happens when a machine learning model performs worse on new, previously unseen inputs 
+#   than it does on the training data. An overfitted model "memorizes" the noise and details in the training dataset
+#   to a point where it negatively impacts the performance of the model on the new data. 
+#   For more information, see the following:
+#   Demonstrate overfitting : https://www.tensorflow.org/tutorials/keras/overfit_and_underfit#demonstrate_overfitting
+#   Strategies to prevent overfitting : 
+    https://www.tensorflow.org/tutorials/keras/overfit_and_underfit#strategies_to_prevent_overfitting
+    """)
+
+    print('# SAVING THE MODEL FOR LATER USE')
+    print("### Now will save model to path : {}".format(CONST_MODEL_PATH))
+    tf.saved_model.save(model, CONST_MODEL_PATH)
+
+    print('# MAKE PREDICTIONS :')
+    print("""
+#   With the model trained, you can use it to make predictions about some images. The model's linear outputs, logits.
+#   Attach a softmax layer to convert the logits to probabilities, which are easier to interpret.  
+#   logits definition : https://developers.google.com/machine-learning/glossary#logits  
+    """)
+    probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
+    predictions = probability_model.predict(test_images)
+    print("""
+#   At this point the model has predicted the label for each image in the testing set. 
+#   Let's take a look at the first prediction:
+    """)
+    print('# prediction for first row of test set : {}'.format(predictions[0]))
+    print("""
+#   A prediction is an array of 10 numbers. 
+#   They represent the model's "confidence" that the image corresponds to each of the 10 different articles of clothing.
+#   You can see which label has the highest confidence value by using the numpy argmax:
+    """)
+    print('predicted class {}, corresponding to a {}'.format(
+        np.argmax(predictions[0]), class_names[np.argmax(predictions[0]).item()]))
+    print('real class {}, corresponding to a {}'.format(
+        test_labels[0], class_names[test_labels[0]]))
+
+    print('# VERIFY SOME PREDICTIONS')
+    print("""
+#   With the model trained, you can use it to make predictions about some images.
+#   Let's look at the 0th image, predictions, and prediction array.
+#   Correct prediction labels are blue and incorrect prediction labels are red. 
+#   The number gives the percentage (out of 100) for the predicted label.
+    """)
+    i = 0
+    plt.figure(figsize=(6, 3))
+    plt.subplot(1, 2, 1)
+    plot_image(i, predictions[i], test_labels, test_images)
+    plt.subplot(1, 2, 2)
+    plot_value_array(i, predictions[i], test_labels)
+    plt.show()
+    print('# what about the 12th image ?')
+    i = 12
+    plt.figure(figsize=(6, 3))
+    plt.subplot(1, 2, 1)
+    plot_image(i, predictions[i], test_labels, test_images)
+    plt.subplot(1, 2, 2)
+    plot_value_array(i, predictions[i], test_labels)
+    plt.show()
+    print("""
+#   Let's plot several images with their predictions. 
+#   Note that the model can be wrong even when very confident.
+""")
+    # Plot the first X test images, their predicted labels, and the true labels.
+    # Color correct predictions in blue and incorrect predictions in red.
+    num_rows = 5
+    num_cols = 3
+    num_images = num_rows * num_cols
+    plt.figure(figsize=(2 * 2 * num_cols, 2 * num_rows))
+    for i in range(num_images):
+        plt.subplot(num_rows, 2 * num_cols, 2 * i + 1)
+        plot_image(i, predictions[i], test_labels, test_images)
+        plt.subplot(num_rows, 2 * num_cols, 2 * i + 2)
+        plot_value_array(i, predictions[i], test_labels)
+    plt.tight_layout()
+    plt.show()
