@@ -60,7 +60,7 @@ if __name__ == '__main__':
  #   - The train_images and train_labels arrays are the training set, the data the model uses to learn.
  #   - The model is tested against the test set, the test_images, and test_labels arrays.""")
 
-    print(' # shape of the training set {}'.format(train_images.shape))
+    print(' # shape of the training set {}: '.format(train_images.shape))
     print(' # type of the training set {}'.format(type(train_images)))
     print(' # len of the training label {}'.format(len(train_labels)))
     print(' # stats on the training label {}'.format(pd.DataFrame(train_labels).describe()))
@@ -88,7 +88,7 @@ if __name__ == '__main__':
     print('# we need to "normalize" the images in the training & testing sets')
     train_images = train_images / 255.0
     test_images = test_images / 255.0
-
+    print(' # check shape of the training set {}'.format(train_images.shape))
     print("""
 #   To verify that the data is in the correct format
 #   and that you're ready to build and train the network,
@@ -118,7 +118,8 @@ if __name__ == '__main__':
 
     model = tf.keras.Sequential([
         tf.keras.layers.Flatten(input_shape=(28, 28)),
-        tf.keras.layers.Dense(128, activation='relu'),
+        tf.keras.layers.Dense(64, activation='relu'),
+        tf.keras.layers.Dense(32, activation='relu'),
         tf.keras.layers.Dense(10)
     ])
 
@@ -133,11 +134,15 @@ if __name__ == '__main__':
     print(""""
 #   After the pixels are flattened, the network consists of a sequence of two tf.keras.layers.Dense layers.
 #   These are densely connected, or fully connected, neural layers.
-#   The first Dense layer has 128 nodes (or neurons). 
-#   The second (and last) layer returns a logits array with length of 10. 
+#   The first and second Dense layer have 128 nodes (or neurons). 
+#   The third (and last) layer returns a logits array with length of 10. 
 #   Each node contains a score that indicates the current image belongs to one of the 10 classes.  
 #   more info : https://www.tensorflow.org/api_docs/python/tf/keras/layers/Dense  
     """)
+
+    print('# model summary : ')
+    print(model.summary())
+
 
     print("""
 #   Ok we are ready to compile the previous model
