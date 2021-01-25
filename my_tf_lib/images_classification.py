@@ -1,6 +1,8 @@
 import glob
 import os
 import re
+import pathlib
+import PIL
 
 # next line is to limit tensorflow verbose output
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
@@ -8,6 +10,7 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 import tensorflow as tf
 import numpy as np
 from tensorflow.keras.models import load_model
+import matplotlib.pyplot as plt
 
 
 def make_images_predictions_from_model(path_to_images, path_to_model, class_list, image_size, normalization_factor):
@@ -65,3 +68,55 @@ def make_images_predictions_from_model(path_to_images, path_to_model, class_list
     total = num_correct_predictions + num_wrong_predictions
     percent_success = (num_correct_predictions / total) * 100
     print('{:2.2f}% percent success !'.format(percent_success))
+
+
+def show_n_images_category_from_path(class_names, base_path, num_images_by_category=5):
+    """
+    will display a figure of 10x10 inch with a row for every category in class_names and num_images_by_category columns
+    :param class_names: list of different categories names (directory names)
+    :param base_path: the base path of the different categories of images, one dir by category
+    :param num_images_by_category: the number of columns with the first images from the category
+    :return: None
+    """
+    data_dir = pathlib.Path(base_path)
+    plt.figure(figsize=(10, 10))
+    num_categories = len(class_names)
+    total = num_categories * num_images_by_category
+    previous_category_index = -1
+    for i in range(total):
+        cat_index = i // num_categories
+        img_index = i % num_categories
+        if previous_category_index != cat_index:
+            files = list(data_dir.glob('{}/*'.format(class_names[cat_index])))
+            previous_category_index = cat_index
+        plt.subplot(num_categories, num_images_by_category, i + 1)
+        plt.xticks([])
+        plt.yticks([])
+        plt.grid(False)
+        img = PIL.Image.open(str(files[img_index]))
+        label = '{}, {}'.format(class_names[cat_index], img.size)
+        plt.imshow(img, cmap=plt.cm.binary)
+        plt.xlabel(label)
+    plt.show()
+
+
+def show_n_images_from_dataset(dataset, num_images_by_category=3):
+    """
+    will display a figure of 10x10 inch with a row for every category in class_names and num_images_by_category columns
+    :param dataset: a valid tf.data.Dataset
+    :param num_images_by_category:
+    :return:
+    """
+    class_names = dataset.class_names
+    plt.figure(figsize=(10, 10))
+    num_categories = len(class_names)
+    total = num_categories * num_images_by_category
+    for images, labels in dataset.take(1):
+        for i in range(total):
+            cat_index = i // num_categories
+            img_index = i % num_categories
+            ax = plt.subplot(num_categories, num_images_by_category, i + 1)
+            plt.imshow(images[i].numpy().astype("uint8"))
+            plt.title(class_names[labels[i]])
+            plt.axis("off")
+    plt.show()
