@@ -5,7 +5,10 @@ os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
 
 import tensorflow as tf
 from tensorflow.keras import datasets, layers, models
+import pandas as pd
 import matplotlib.pyplot as plt
+
+CONST_MODEL_PATH = 'trained_models/tf2_model_cifar10_2xConv2D_MaxPooling2D'
 
 if __name__ == '__main__':
     print('# Tensorflow version : {}'.format(tf.__version__))
@@ -16,6 +19,24 @@ if __name__ == '__main__':
     (train_images, train_labels), (test_images, test_labels) = datasets.cifar10.load_data()
     print('# Normalize pixel values from the samples to floats between 0 and 1')
     train_images, test_images = train_images / 255.0, test_images / 255.0
+
+    print('=' * 80)
+    print(' # shape of the training set {}: '.format(train_images.shape))
+    print(' # type of the training set {}'.format(type(train_images)))
+    print(' # len of the training label {}'.format(len(train_labels)))
+    df = pd.DataFrame(train_labels)
+    df.columns = ['labels']
+    df = df.astype({"labels": 'category'})
+    # let's print the number of distinct labels
+    print(' # count distinct labels in training {}'.format(df.groupby(['labels']).size().reset_index(name='counts')))
+
+    print(' # shape of the test set {}'.format(test_images.shape))
+    print(' # len of the test label {}'.format(len(test_labels)))
+    df = pd.DataFrame(test_labels)
+    df.columns = ['labels']
+    df = df.astype({"labels": 'category'})
+    print(' # count distinct labels in training {}'.format(df.groupby(['labels']).size().reset_index(name='counts')))
+    print('=' * 80)
 
     class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
                    'dog', 'frog', 'horse', 'ship', 'truck']
@@ -44,11 +65,11 @@ if __name__ == '__main__':
 # You can do this by passing the argument "input_shape" to our first layer.    
     """)
     model = models.Sequential()
-    model.add(layers.Conv2D(32, (3, 3), activation='relu', input_shape=(32, 32, 3)))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
-    model.add(layers.MaxPooling2D((2, 2)))
-    model.add(layers.Conv2D(64, (3, 3), activation='relu'))
+    model.add(layers.Conv2D(32, kernel_size=(3, 3), activation='relu', input_shape=(32, 32, 3)))
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Conv2D(64, kernel_size=(3, 3), activation='relu'))
+    model.add(layers.MaxPooling2D(pool_size=(2, 2)))
+    model.add(layers.Conv2D(64, kernel_size=(3, 3), activation='relu'))
     print('Here is the model.summary() : {}'.format(model.summary()))
 
     print(""""
@@ -92,6 +113,7 @@ if __name__ == '__main__':
     plt.ylabel('Accuracy')
     plt.ylim([0.5, 1])
     plt.legend(loc='lower right')
+    plt.show()
 
     test_loss, test_acc = model.evaluate(test_images, test_labels, verbose=2)
     print('test_acc : {}'.format(test_acc))
@@ -100,3 +122,6 @@ if __name__ == '__main__':
 #   For another CNN style, see an example using the Keras subclassing API and a tf.GradientTape here :
     https://www.tensorflow.org/tutorials/quickstart/advanced
     """)
+    print('# SAVING THE MODEL FOR LATER USE')
+    print("### Now will save model to path : {}".format(CONST_MODEL_PATH))
+    tf.saved_model.save(model, CONST_MODEL_PATH)
