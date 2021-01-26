@@ -20,11 +20,12 @@ def make_images_predictions_from_model(path_to_images, path_to_model, class_list
     model = load_model(path_to_model)
     probability_model = tf.keras.Sequential([model, tf.keras.layers.Softmax()])
 
-    print("### Now trying model.predict with a brand new set of images !!")
+    print("### Now trying model.predict with a brand new set of images !")
     test_images_path = []
     for image_path in glob.glob('{}/*.jpeg'.format(path_to_images)):
         test_images_path.append(image_path)
     test_images_path.sort()
+    print("# found {} images in path : {} ".format(len(test_images_path), path_to_images))
     num_correct_predictions = 0
     num_wrong_predictions = 0
     num_ignored_images = 0
@@ -60,14 +61,15 @@ def make_images_predictions_from_model(path_to_images, path_to_model, class_list
 
         except ValueError as e:
             num_ignored_images += 1
-            print('WARNING : Image name {} is not in the CIFAR-10 fashion classes'.format(filename))
+            print('WARNING : Image name {} is not in the given categories'.format(filename))
             print('WARNING : Image name {} will not be in the test set !'.format(filename))
             print('Exception : {}'.format(e))
     print('=' * 80)
     print('{} CORRECT PREDICTIONS, {} WRONG PREDICTIONS'.format(num_correct_predictions, num_wrong_predictions))
     total = num_correct_predictions + num_wrong_predictions
-    percent_success = (num_correct_predictions / total) * 100
-    print('{:2.2f}% percent success !'.format(percent_success))
+    if total > 0:
+        percent_success = (num_correct_predictions / total) * 100
+        print('{:2.2f}% percent success !'.format(percent_success))
 
 
 def show_n_images_category_from_path(class_names, base_path, num_images_by_category=5):
