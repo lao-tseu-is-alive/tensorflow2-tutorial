@@ -130,3 +130,8 @@ dmypy.json
 
 # Pycharm IDe directory
 .idea
+/godata/
+/godata_resized/
+/unseen_test_samples/godata/
+/godata_resized.tar.gz
+/trained_models/tf2_model_cnn_godata_with_data_augmentation_classifier/
