@@ -122,3 +122,16 @@ def show_n_images_from_dataset(dataset, num_images_by_category=3):
             plt.title(class_names[labels[i]])
             plt.axis("off")
     plt.show()
+
+
+def get_imagenet_classes():
+    labels_path = tf.keras.utils.get_file(
+        'ImageNetLabels.txt',
+        'https://storage.googleapis.com/download.tensorflow.org/data/ImageNetLabels.txt')
+    imagenet_labels = open(labels_path).read().splitlines()
+    return imagenet_labels
+
+
+def get_imagenet_classes_with_synonyms(labels_path):
+    imagenet_labels = open(labels_path).read().splitlines()
+    return imagenet_labels
