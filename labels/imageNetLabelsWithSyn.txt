@@ -18,7 +18,7 @@ robin, American robin, Turdus migratorius
 bulbul
 jay
 magpie
-chickadee
+chickadee, bird
 water ouzel, dipper
 kite
 bald eagle, American eagle, Haliaeetus leucocephalus
@@ -85,7 +85,7 @@ ruffed grouse, partridge, Bonasa umbellus
 prairie chicken, prairie grouse, prairie fowl
 peacock
 quail
-partridge
+partridge, bird
 African grey, African gray, Psittacus erithacus
 macaw
 sulphur-crested cockatoo, Kakatoe galerita, Cacatua galerita
@@ -94,7 +94,7 @@ coucal
 bee eater
 hornbill
 hummingbird
-jacamar
+jacamar, Galbulidae, bird
 toucan
 drake
 red-breasted merganser, Mergus serrator
@@ -207,13 +207,13 @@ Lhasa, Lhasa apso
 flat-coated retriever
 curly-coated retriever
 golden retriever, dog
-Labrador retriever
-Chesapeake Bay retriever
-German short-haired pointer
-vizsla, Hungarian pointer
-English setter
-Irish setter, red setter
-Gordon setter
+Labrador retriever, dog
+Chesapeake Bay retriever, dog
+German short-haired pointer, dog
+vizsla, Hungarian pointer, dog
+English setter, dog
+Irish setter, red setter, dog
+Gordon setter, dog
 Brittany spaniel
 clumber, clumber spaniel
 English springer, English springer spaniel
@@ -230,26 +230,26 @@ kelpie
 komondor
 Old English sheepdog, bobtail
 Shetland sheepdog, Shetland sheep dog, Shetland
-collie
-Border collie
-Bouvier des Flandres, Bouviers des Flandres
-Rottweiler
+collie, dog
+Border collie, dog
+Bouvier des Flandres, Bouviers des Flandres, dog
+Rottweiler, dog
 German shepherd, German shepherd dog, German police dog, alsatian
 Doberman, Doberman pinscher, dog
-miniature pinscher
+miniature pinscher, dog
 Greater Swiss Mountain dog
 Bernese mountain dog
-Appenzeller
-EntleBucher
-boxer
-bull mastiff
-Tibetan mastiff
+Appenzeller, dog
+EntleBucher, dog
+boxer, dog
+bull mastiff, dog
+Tibetan mastiff, dog
 French bulldog
-Great Dane
-Saint Bernard, St Bernard
+Great Dane, dog
+Saint Bernard, St Bernard, dog
 Eskimo dog, husky
 malamute, malemute, Alaskan malamute
-Siberian husky
+Siberian husky, dog
 dalmatian, coach dog, carriage dog
 affenpinscher, monkey pinscher, monkey dog
 basenji
@@ -478,7 +478,7 @@ car mirror
 carousel, carrousel, merry-go-round, roundabout, whirligig
 carpenter's kit, tool kit
 carton
-car wheel
+car wheel, car, automobile
 cash machine, cash dispenser, automated teller machine, automatic teller machine, automated teller, automatic teller, ATM
 cassette
 cassette player
@@ -553,7 +553,7 @@ espresso maker
 face powder
 feather boa, boa
 file, file cabinet, filing cabinet
-fireboat
+fireboat, ship
 fire engine, fire truck
 fire screen, fireguard
 flagpole, flagstaff
@@ -655,7 +655,7 @@ military uniform
 milk can
 minibus
 miniskirt, mini
-minivan
+minivan, car, automobile
 missile
 mitten
 mixing bowl
@@ -716,7 +716,7 @@ photocopier
 pick, plectrum, plectron
 pickelhaube
 picket fence, paling
-pickup, pickup truck
+pickup, pickup truck, car, automobile
 pier
 piggy bank, penny bank
 pill bottle
@@ -816,7 +816,7 @@ spatula
 speedboat
 spider web, spider's web
 spindle
-sports car, sport car
+sports car, sport car, car, automobile
 spotlight, spot
 stage
 steam locomotive

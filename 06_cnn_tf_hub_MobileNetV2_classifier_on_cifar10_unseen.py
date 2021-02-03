@@ -63,15 +63,20 @@ def make_images_predictions_from_model(path_to_images, model, class_list, image_
             res = predictions_single[0]
             predicted_class = np.argmax(predictions_single)
             predicted_class_name = class_list[predicted_class.item()]
+            # convert from logits to
+            probabilities = tf.nn.softmax(predictions_single[0])
             if re.match('.*{}'.format(image_real_class_name), predicted_class_name):
                 num_correct_predictions += 1
-                print('# ✅ ✅ prediction for {} is CORRECT  {} = {:10} {:2.2f} percent confidence'.format(
-                    filename, predicted_class, predicted_class_name, (100 * res[predicted_class])))
+                print('# ✅ ✅ prediction for {} is CORRECT  {} = "{:10}", with {:2.2f} percent confidence'.format(
+                    filename, predicted_class, predicted_class_name, (probabilities[predicted_class])))
             else:
                 num_wrong_predictions += 1
-                print('# ❌ ❌  prediction for {} is  WRONG   {} = {:10} {:2.2f} percent confidence'.format(
-                    filename, predicted_class, predicted_class_name, (100 * res[predicted_class])))
-            print(', '.join(['{}: {:2.2f}%'.format(class_list[i], 100 * x) for i, x in enumerate(res)]))
+                print('# ❌ ❌  prediction for {} is  WRONG   {} = "{:10}", with {:2.2f} percent confidence'.format(
+                    filename, predicted_class, predicted_class_name, (probabilities[predicted_class])))
+
+            top_5_values, top_5_indices = tf.nn.top_k(probabilities, k=5)
+            for i in range(len(top_5_values)):
+                print("[{:4}]:{:6} -->{:2.2f}%".format(top_5_indices[i], class_list[top_5_indices[i]], top_5_values[i]))
 
         except Exception as e:
             num_ignored_images += 1
